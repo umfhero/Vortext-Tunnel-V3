@@ -1,0 +1,4 @@
+customtkinter
+Pillow
+tkinterdnd2-universal
+tkinterdnd2

@@ -1,0 +1,8 @@
+P2P Networking Layer: libp2p
+Centralized Backend: Supabase
+API Hosting (for your FastAPI/Flask backend): Google Cloud Functions / AWS Lambda
+
+STUN/TURN Servers: 
+STUN (for IP Discovery) Use existing public STUN servers initially stun.l.google.com:19302) and/or self-host coturn on your central backend VPS
+TURN (for Traffic Relay) Minimize reliance on TURN by optimizing libp2p and only use it as a last resort. If necessary, self-host coturn on dedicated server(s)
+
