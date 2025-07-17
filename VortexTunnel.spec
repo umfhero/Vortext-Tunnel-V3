@@ -41,7 +41,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='VortexTunnel_V0.1.7',
+    name='VortexTunnel_V0.1.8',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

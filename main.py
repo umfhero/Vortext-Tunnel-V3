@@ -243,11 +243,21 @@ class VortexTunnelApp(ctk.CTkFrame):
         files_tab.grid_columnconfigure(0, weight=1)
         files_tab.grid_rowconfigure(0, weight=1)
 
+        # Create a main container frame
+        main_container = ctk.CTkFrame(files_tab, fg_color="transparent")
+        main_container.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
+        main_container.grid_columnconfigure(0, weight=1)
+        main_container.grid_rowconfigure(0, weight=1)
+
         self.gallery_frame = ctk.CTkScrollableFrame(
-            files_tab, label_text="Shared File Gallery")
+            main_container, label_text="Shared File Gallery")
         self.gallery_frame.grid(row=0, column=0, sticky="nsew")
 
-        # Enable drag and drop for the gallery frame
+        # Enable drag and drop for the main tab, main container, and gallery frame
+        files_tab.drop_target_register(DND_FILES)
+        files_tab.dnd_bind('<<Drop>>', self.handle_drop)
+        main_container.drop_target_register(DND_FILES)
+        main_container.dnd_bind('<<Drop>>', self.handle_drop)
         self.gallery_frame.drop_target_register(DND_FILES)
         self.gallery_frame.dnd_bind('<<Drop>>', self.handle_drop)
 
@@ -255,13 +265,14 @@ class VortexTunnelApp(ctk.CTkFrame):
             self.gallery_frame.grid_columnconfigure(
                 i, weight=1, uniform="file_item")
 
+        # Create drag & drop label that goes below the file containers
         self.drag_drop_label = ctk.CTkLabel(
-            self.gallery_frame,
+            main_container,
             text="Drag & Drop Files Here",
-            font=ctk.CTkFont(size=36, weight="bold"),
+            font=ctk.CTkFont(size=24, weight="bold"),
             text_color="gray50"
         )
-        self.drag_drop_label.place(relx=0.5, rely=0.5, anchor="center")
+        self.drag_drop_label.grid(row=1, column=0, pady=20)
 
         # Also enable drag and drop for the label itself
         self.drag_drop_label.drop_target_register(DND_FILES)
