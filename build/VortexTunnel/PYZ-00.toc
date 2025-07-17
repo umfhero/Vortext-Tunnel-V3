@@ -1,4 +1,5 @@
-('C:\\Users\\umfhe\\Desktop\\Vortex-Tunnel-V3\\build\\VortexTunnel\\PYZ-00.pyz',
+('C:\\A - Main PC\\A - My Personal Projects\\A - Coding Projects\\Vortext '
+ 'Tunnel V3\\Vortext-Tunnel-V3\\build\\VortexTunnel\\PYZ-00.pyz',
  [('PIL',
    'C:\\Users\\umfhe\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\PIL\\__init__.py',
    'PYMODULE'),
