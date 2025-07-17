@@ -13,7 +13,7 @@ import time
 import sys  # Import sys for resource_path helper
 
 # --- Application Version ---
-VERSION = "V0.1.6"
+VERSION = "V0.1.7"
 
 # --- Helper for PyInstaller resource path ---
 
@@ -291,9 +291,18 @@ class VortexTunnelApp(ctk.CTkFrame):
         fg_color=("#3b8ed0", "#1f6aa5") if self.is_pinned else ctk.ThemeManager.theme["CTkButton"]["fg_color"])
 
     def handle_drop(self, event):
-        filepath = self.master.tk.splitlist(event.data)[0]
-        print(f"DEBUG: Dropped file: {filepath}")
-        self.send_file(filepath)
+        try:
+            filepath = self.master.tk.splitlist(event.data)[0]
+            print(f"DEBUG: Dropped file: {filepath}")
+            if os.path.exists(filepath) and os.path.isfile(filepath):
+                self.send_file(filepath)
+            else:
+                self.update_status(
+                    f"Invalid file: {os.path.basename(filepath)}", "red")
+                print(f"ERROR: Invalid file path: {filepath}")
+        except Exception as e:
+            print(f"ERROR: Error handling dropped file: {e}")
+            self.update_status("Error processing dropped file", "red")
 
     def add_chat_message(self, msg_id, sender, message, is_own, is_file=False, file_info=None):
         if msg_id in self.chat_messages:
@@ -471,6 +480,15 @@ class VortexTunnelApp(ctk.CTkFrame):
             print(
                 f"ERROR: Cannot send file. Path invalid or doesn't exist: {filepath}")
             return
+
+        # Check if connected before attempting to send
+        if not self.connected.is_set():
+            self.update_status(
+                "Cannot send file: Not connected to peer", "red")
+            messagebox.showwarning(
+                "Connection Required", "Please connect to a peer before sending files.")
+            return
+
         self.update_status(
             f"Requesting to send {os.path.basename(filepath)}...", "orange")
         filename, filesize = os.path.basename(
@@ -482,10 +500,25 @@ class VortexTunnelApp(ctk.CTkFrame):
         # Add to gallery immediately locally
         self.add_file_to_gallery(file_id, filename, filepath)
 
+        # Send the file request
         self.send_command(f"FILE_REQUEST:{file_id}:{filename}:{filesize}")
+
+        # Set a timeout to clear the status if no response
+        self.after(10000, lambda: self._check_file_transfer_timeout(
+            file_id, filename))
+
+    def _check_file_transfer_timeout(self, file_id, filename):
+        """Check if a file transfer request has timed out"""
+        if file_id in self.pending_transfers and "filepath" in self.pending_transfers[file_id]:
+            # Still pending, means the peer didn't respond
+            del self.pending_transfers[file_id]
+            self.update_status(f"File request timeout for '{filename}'", "red")
+            print(
+                f"DEBUG: File transfer timeout for {filename} (ID: {file_id})")
 
     def _send_file_data(self, file_id):
         if file_id not in self.pending_transfers:
+            print(f"DEBUG: File ID {file_id} not in pending transfers")
             return
         filepath = self.pending_transfers[file_id]['filepath']
         filename = self.pending_transfers[file_id]['filename']
@@ -498,17 +531,25 @@ class VortexTunnelApp(ctk.CTkFrame):
                 if not self.connected.is_set():
                     raise ConnectionError(
                         "Connection lost during file send preparation.")
+
+                # Update status to show progress
+                self.update_status(f"Sending '{filename}'...", "cyan")
+
                 while True:
                     chunk = f.read(8192)
                     if not chunk:
                         break
+                    if not self.connected.is_set():
+                        raise ConnectionError(
+                            "Connection lost during file transfer.")
                     self.connection.sendall(chunk)
+
             self.update_status(
-                f"Successfully sent {os.path.basename(filepath)}", "white")
+                f"Successfully sent {os.path.basename(filepath)}", "green")
             self.send_command(f"ADD_TO_GALLERY:{file_id}:{filename}")
         except Exception as e:
             print(f"Error sending file data: {e}")
-            self.update_status(f"Failed to send file", "red")
+            self.update_status(f"Failed to send '{filename}': {str(e)}", "red")
             messagebox.showerror("File Transfer Error",
                                  f"Failed to send '{filename}': {e}")
         finally:
@@ -667,15 +708,22 @@ class VortexTunnelApp(ctk.CTkFrame):
                 self.clear_remote_mouse()
             elif cmd == "FILE_REQUEST":
                 _, file_id, filename, filesize = command_str.split(":", 3)
-                self.pending_transfers[file_id] = {
-                    "filename": filename, "filesize": int(filesize)}
-                self.send_command(f"FILE_ACCEPT:{file_id}")
-                self.update_status(
-                    f"Automatically accepting incoming file: '{filename}'", "white")
+                if self.connected.is_set():
+                    self.pending_transfers[file_id] = {
+                        "filename": filename, "filesize": int(filesize)}
+                    self.send_command(f"FILE_ACCEPT:{file_id}")
+                    self.update_status(
+                        f"Automatically accepting incoming file: '{filename}'", "white")
+                else:
+                    # Not connected, reject the file
+                    print(f"WARNING: Received FILE_REQUEST while not connected")
+                    return
             elif cmd == "FILE_ACCEPT":
                 _, file_id = command_str.split(":", 1)
                 if file_id in self.pending_transfers:
                     if "filepath" in self.pending_transfers[file_id]:
+                        filename = self.pending_transfers[file_id]['filename']
+                        self.update_status(f"Sending '{filename}'...", "cyan")
                         threading.Thread(target=self._send_file_data, args=(
                             file_id,), daemon=True).start()
                 else:
