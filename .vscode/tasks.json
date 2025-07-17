@@ -1,0 +1,13 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "Build Vortex Tunnel (PyInstaller)",
+			"command": "pyinstaller --onefile --windowed --icon vortex.ico main.py --name VortexTunnel_V0.1.6",
+			"args": [],
+			"group": "build",
+			"problemMatcher": []
+		}
+	]
+}
