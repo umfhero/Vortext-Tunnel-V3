@@ -1,0 +1,249 @@
+================================================================================
+                           VORTEX TUNNEL PROJECT DESCRIPTION
+================================================================================
+
+PROJECT OVERVIEW
+================================================================================
+Vortex Tunnel is a real-time collaborative desktop application designed for secure, 
+direct peer-to-peer connections between computers. The application eliminates the 
+need for traditional servers or complex port forwarding by leveraging Tailscale's 
+mesh networking technology for secure, encrypted communication.
+
+The project aims to combine the best features of modern communication platforms 
+(like Discord Nitro's high-quality screen sharing and rich communications) with 
+remote desktop capabilities (similar to Parsec) while adding unique collaborative 
+features like persistent file vaults and real-time drawing.
+
+CORE FUNCTIONALITY
+================================================================================
+
+NETWORKING FOUNDATION
+- Built on Tailscale mesh networking for secure peer-to-peer connections
+- Uses WireGuard-based encryption protocol for all communications
+- Direct machine-to-machine connections without intermediate servers
+- No port forwarding or complex network configuration required
+- TCP socket-based communication on port 12345
+
+COLLABORATION FEATURES
+================================================================================
+
+1. REAL-TIME CHAT SYSTEM
+   - Encrypted text messaging between connected peers
+   - Message editing and deletion capabilities
+   - Persistent chat history stored locally
+   - Real-time message synchronization
+   - Support for both sent and received message management
+
+2. FILE SHARING & GALLERY
+   - Secure direct file transfer between peers
+   - Drag-and-drop file sharing interface
+   - Persistent file gallery with thumbnails for images
+   - File filtering options (All, Sent, Received)
+   - Search functionality for file discovery
+   - Automatic file organization in dedicated downloads folder
+   - Support for large file transfers without size restrictions
+   - File metadata persistence across sessions
+
+3. COLLABORATIVE WHITEBOARD
+   - Real-time drawing and sketching capabilities
+   - Synchronized drawing between connected peers
+   - Customizable brush colors and sizes
+   - Live mouse cursor tracking with peer identification
+   - Canvas clearing functionality
+   - Real-time collaboration with visual feedback
+
+USER INTERFACE & EXPERIENCE
+================================================================================
+
+DESIGN PHILOSOPHY
+- Modern dark theme interface
+- Three-tab organization: Files, Drawing, Chat
+- Intuitive drag-and-drop functionality throughout
+- Responsive layout with proper scaling
+- Professional appearance with consistent styling
+
+PROFILE MANAGEMENT
+- Pre-configured user profiles with Tailscale IP addresses
+- Easy profile switching for different identities
+- Automatic last-used profile restoration
+- Support for multiple connection targets
+
+CONNECTION MANAGEMENT
+- Simple dropdown-based peer selection
+- One-click connection establishment
+- Automatic connection status management
+- Graceful disconnect handling
+- Real-time connection status feedback
+
+TECHNICAL ARCHITECTURE
+================================================================================
+
+CORE TECHNOLOGIES
+- Modern GUI framework with native desktop appearance
+- Image processing capabilities for thumbnails and image handling
+- Drag-and-drop functionality for file operations
+- Networking: Native socket programming with threading
+- Data Format: JSON for configuration and metadata storage
+
+NETWORKING IMPLEMENTATION
+- TCP server listening on 0.0.0.0:12345
+- Client connection capabilities to peer IP addresses
+- Command-based protocol for different message types
+- Binary file transfer with streaming capabilities
+- Automatic connection recovery and error handling
+
+DATA MANAGEMENT
+- Local configuration storage in system AppData folder
+- Persistent chat history logging
+- File gallery metadata tracking
+- Automatic directory creation and management
+- Session state preservation across application restarts
+
+TAILSCALE INTEGRATION
+================================================================================
+
+NETWORK CONFIGURATION
+- Relies on Tailscale for secure mesh networking
+- Uses Tailscale-assigned IP addresses for peer connections
+- Benefits from Tailscale's automatic NAT traversal
+- Inherits Tailscale's enterprise-grade security features
+- No additional VPN or networking setup required
+
+PRE-CONFIGURED PEERS
+The application includes hardcoded profiles for specific users:
+- "Majid": 100.93.161.73
+- "Nathan": 100.122.120.65  
+- "Majid 2.0": 100.92.141.68
+
+These represent specific Tailscale node addresses for known collaborators.
+
+SECURITY FEATURES
+================================================================================
+
+ENCRYPTION & PRIVACY
+- All communication encrypted by Tailscale's WireGuard implementation
+- Direct peer-to-peer connections without data interception
+- No central server storing user data or communications
+- Local data storage only on user devices
+- Secure file transfer without cloud intermediaries
+
+ACCESS CONTROL
+- Connection only possible between authenticated Tailscale nodes
+- Identity verification through Tailscale network membership
+- No unauthorized access possible outside Tailscale mesh
+- Automatic disconnection on network issues
+
+FILE SYSTEM ORGANIZATION
+================================================================================
+
+APPLICATION DATA STRUCTURE
+- Main application folder: %APPDATA%\Vortex Tunnel\
+- Configuration: config.json (stores last used profiles)
+- Chat history: chat_history.log (persistent message storage)
+- Downloads: Vortex_Downloads\ (received files storage)
+- File metadata: file_gallery.json (gallery persistence)
+
+BUILD SYSTEM
+- Standalone executable creation and packaging
+- Multiple version configurations for different releases
+- Icon integration (vortex.ico)
+- Single-file executable generation
+- Windows-optimized builds
+
+ADVANCED FEATURES
+================================================================================
+
+PLANNED ENHANCEMENTS
+Based on documentation and code structure, future development includes:
+- 1080p screen sharing capabilities
+- Remote PC control functionality
+- Multi-peer connectivity support
+- Integrated code editing features
+- Mobile companion applications
+- Enhanced file vault synchronization
+
+CURRENT CAPABILITIES
+- Real-time mouse tracking and visualization
+- Command-based protocol extensibility
+- Modular tab-based interface design
+- Persistent application state management
+- Professional tooltip system for user guidance
+
+DEPLOYMENT & DISTRIBUTION
+================================================================================
+
+PACKAGING
+- Standalone Windows executable
+- No installation required - portable application
+- Integrated application icon and branding
+- Version tracking and update checking capabilities
+- Professional release management through GitHub
+
+SYSTEM REQUIREMENTS
+- Windows operating system
+- Tailscale installation and configuration
+- Network connectivity for Tailscale mesh
+- Sufficient disk space for file transfers and storage
+- Modern hardware for smooth graphical interface
+
+USER WORKFLOW
+================================================================================
+
+TYPICAL USAGE PATTERN
+1. Install and configure Tailscale on both machines
+2. Launch Vortex Tunnel application
+3. Select personal identity profile from dropdown
+4. Choose target peer from connection list
+5. Establish connection with single click
+6. Begin collaboration through any of the three main features:
+   - Chat for text communication
+   - Drawing for visual collaboration  
+   - Files for document and media sharing
+
+SESSION MANAGEMENT
+- Automatic restoration of previous session settings
+- Persistent file gallery across application restarts
+- Chat history preservation for ongoing conversations
+- Profile preference memory for convenient reconnection
+
+COLLABORATION SCENARIOS
+================================================================================
+
+BUSINESS APPLICATIONS
+- Remote team collaboration and brainstorming
+- Secure file sharing for sensitive documents
+- Real-time design review and feedback sessions
+- Cross-location project coordination
+
+PERSONAL USE CASES
+- Family photo and video sharing
+- Friend-to-friend gaming file exchange
+- Educational tutoring with visual aids
+- Creative collaboration on art projects
+
+TECHNICAL ADVANTAGES
+- No bandwidth costs for large file transfers
+- Maximum transfer speeds limited only by internet connection
+- Complete privacy with no third-party data access
+- Reliability through direct connections without server dependencies
+
+PROJECT STATUS & VERSION
+================================================================================
+
+CURRENT VERSION: 4.0.1
+- Mature file sharing and gallery system
+- Stable chat implementation with full history
+- Functional collaborative drawing platform
+- Professional user interface with dark theme
+- Comprehensive error handling and recovery
+
+DEVELOPMENT HISTORY
+- Multiple version iterations with preserved build specifications
+- Continuous improvement of user interface
+- Enhanced file management capabilities
+- Robust networking implementation
+- Professional packaging and distribution setup
+
+This project represents a sophisticated peer-to-peer collaboration platform that 
+prioritizes security, privacy, and ease of use while providing powerful features 
+for real-time communication and file sharing between trusted parties.
